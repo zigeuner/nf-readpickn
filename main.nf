@@ -86,6 +86,6 @@ workflow {
     inputs = Channel.fromFilePairs(globstr)
     printInputs( inputs )
 
-    TRUNCATE_FASTQ( inputs )
-//    TRUNCATE_FASTQ_SIMPLE( inputs )
+//    TRUNCATE_FASTQ( inputs )
+    TRUNCATE_FASTQ_SIMPLE( inputs )
 }

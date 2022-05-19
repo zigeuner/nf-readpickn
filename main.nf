@@ -50,6 +50,7 @@ process TRUNCATE_FASTQ {
 }      
 
 process TRUNCATE_FASTQ_SIMPLE {
+    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/nextflow'
     publishDir "$params.outdir"
 
     input:
@@ -68,6 +69,8 @@ process TRUNCATE_FASTQ_SIMPLE {
 }
 
 process printInputs {
+    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/nextflow'
+
     input:
     tuple val(sample), path(reads)
 

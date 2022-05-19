@@ -25,6 +25,7 @@ process TRUNCATE_FASTQ {
 
     output:
     path "*.fastq.gz"
+    path "log.txt"
 
     script:
     def (fq1, fq2) = reads
@@ -35,6 +36,10 @@ process TRUNCATE_FASTQ {
     #!/usr/bin/env python
     import gzip
     import pysam
+    import traceback    
+
+    outfile = open('log.txt', 'w')
+    outfile.write("log from TRUNCATE_FASTQ process:\\n")
 
     def truncate(fn, num):
         with pysam.FastxFile(fn) as ifh:
@@ -43,14 +48,23 @@ process TRUNCATE_FASTQ {
                     if idx >= num:
                         break
                     print(str(entry), file=ofh)
+        return
 
-    truncate('${fq1}', ${params.max_records})
-    truncate('${fq2}', ${params.max_records})
+    try:
+        truncate('${fq1}', ${params.max_records})
+        truncate('${fq2}', ${params.max_records})        
+        outfile.write("ran ok\\n")
+        outfile.close()        
+    except Exception:
+        outfile.write("truncate failed\\n")
+        outfile.write(traceback.format_exc())
+        outfile.close()
+
     """
-}      
+}
 
 process TRUNCATE_FASTQ_SIMPLE {
-    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/nextflow'
+
     publishDir "$params.outdir"
 
     input:
@@ -69,7 +83,6 @@ process TRUNCATE_FASTQ_SIMPLE {
 }
 
 process printInputs {
-    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/nextflow'
 
     input:
     tuple val(sample), path(reads)
@@ -89,6 +102,6 @@ workflow {
     inputs = Channel.fromFilePairs(globstr)
     printInputs( inputs )
 
-//    TRUNCATE_FASTQ( inputs )
-    TRUNCATE_FASTQ_SIMPLE( inputs )
+    TRUNCATE_FASTQ( inputs )
+//    TRUNCATE_FASTQ_SIMPLE( inputs )
 }

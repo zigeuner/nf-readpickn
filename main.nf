@@ -46,7 +46,6 @@ process TRUNCATE_FASTQ {
 
     truncate('${fq1}', ${params.max_records})
     truncate('${fq2}', ${params.max_records})
-    truncate('${fq2}', ${params.max_records})
     """
 }      
 

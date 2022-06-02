@@ -86,6 +86,9 @@ process TRUNCATE_FASTQ_SIMPLE {
 
 process printInputs {
 
+//    container 'quay.io/biocontainers/pysam:0.16.0.1--py37hc334e0b_1'
+    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/artemys-biocontainers/sarekbase'
+
     input:
     tuple val(sample), path(reads)
 

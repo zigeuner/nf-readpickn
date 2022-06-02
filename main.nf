@@ -17,7 +17,8 @@ params.outdir = 'results'
 
 process TRUNCATE_FASTQ {
 
-    container 'quay.io/biocontainers/pysam:0.16.0.1--py37hc334e0b_1'
+//    container 'quay.io/biocontainers/pysam:0.16.0.1--py37hc334e0b_1'
+    container '829680141244.dkr.ecr.us-west-1.amazonaws.com/artemys-biocontainers/sarekbase'
     publishDir "$params.outdir"    
 
     input:
@@ -43,11 +44,12 @@ process TRUNCATE_FASTQ {
 
     def truncate(fn, num):
         with pysam.FastxFile(fn) as ifh:
-            with gzip.open(f'truncated_{fn}', 'wt') as ofh:
+            filename = 'truncated_' + fn
+            with gzip.open(filename, 'wt') as ofh:
                 for idx, entry in enumerate(ifh):
                     if idx >= num:
                         break
-                    print(str(entry), file=ofh)
+                    ofh.write(str(entry))
         return
 
     try:
